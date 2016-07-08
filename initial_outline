@@ -10,7 +10,7 @@ test_top = ''
 test_dir = ''
 
 ref_trajs = glob.glob(ref_dir + '*.mdcrd')
-test_dir = glob.glob(test_dir + '*.mdcrd')
+test_trajs = glob.glob(test_dir + '*.mdcrd')
 
 t0 = md.load(ref_trajs[0], top = ref_top)
 n_res = t0.topology.select('name CA').shape[0]
