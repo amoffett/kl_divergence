@@ -14,7 +14,7 @@ class local_kl_divergence:
     logarithm of the probability of being in bin i in the test ensemble divided by the probability of being in 
     bin i in the reference ensemble (p_{i}^{*}).
     
-    Notation from [1] is replicated as closely as possible using LaTeX format. 
+    Notation from [1] is replicated as closely as possible using LaTeX format while still maintaining clear readability. 
     
     Inputs:
         __init__:
