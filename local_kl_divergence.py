@@ -9,7 +9,7 @@ class local_kl_divergence:
     
     KL_{res_{n}} = sum_{phi,psi,chi1}{sum_{i}^{nbins}{p_{i} * ln(p_{i} / p_{i}^{*})}}
     
-    In words, the local KL divergence for residue n is the sum over all of residue n's dihedral angles and all
+    In words, the local KL divergence for residue n is the sum over all dihedral angles of residue n and all
     bins for each angle of the empirical probability of being in bin i in the test ensemble (p_{i}), times the natural
     logarithm of the probability of being in bin i in the test ensemble divided by the probability of being in 
     bin i in the reference ensemble (p_{i}^{*}).
