@@ -72,7 +72,7 @@ class local_kl_divergence:
         self.dih_ref = None
         self.dih_test = None
         
-        for dihedral in dihedrals:
+        for dihedral in self.dihedrals:
             if dihedral not in ['phi','psi','chi1']:
                 print "Dihedral angle \'%s\' not supported." %dihedral
             
@@ -121,13 +121,13 @@ class local_kl_divergence:
             residue_n = []
             for traj in trajs:
                 traj_k = []
-                if 'phi' in dihedrals:
+                if 'phi' in self.dihedrals:
                     phi = phi_feat(traj, res)
                     traj_k.append(phi)
-                if 'psi' in dihedrals:
+                if 'psi' in self.dihedrals:
                     psi = psi_feat(traj, res)
                     traj_k.append(psi)
-                if 'chi1' in dihedrals:
+                if 'chi1' in self.dihedrals:
                     chi1 = chi1_feat(traj, res)
                     if chi1 is not None:
                         traj_k.append(chi1)
