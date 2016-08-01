@@ -2,6 +2,7 @@ import numpy as np
 from random import shuffle
 import math
 import itertools as it
+import mdtraj as md
 
 class local_kl_divergence:
     """
