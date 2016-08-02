@@ -154,7 +154,7 @@ class local_kl_divergence:
                 all_p_dists.append([resname, p_dists])
             return all_p_dists
     
-    def featurize(self, write_features = True, ref_set_name = 'ref_set_dihedrals.pkl', test_set_name = 'test_set_dihedrals'):
+    def featurize(self, write_features = False, ref_set_name = 'ref_set_dihedrals.pkl', test_set_name = 'test_set_dihedrals.pkl'):
         self.dih_ref = self.dihedral_featurizer(self.ref)
         self.dih_test = self.dihedral_featurizer(self.test)
         if write_features == True:
