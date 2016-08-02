@@ -3,6 +3,7 @@ from random import shuffle
 import math
 import itertools as it
 import mdtraj as md
+import pickle as pkl
 
 class local_kl_divergence:
     """
@@ -153,13 +154,22 @@ class local_kl_divergence:
                 all_p_dists.append([resname, p_dists])
             return all_p_dists
     
-    def featurize(self):
+    def featurize(self, write_features = True, ref_set_name = 'ref_set_dihedrals.pkl', test_set_name = 'test_set_dihedrals'):
         self.dih_ref = self.dihedral_featurizer(self.ref)
         self.dih_test = self.dihedral_featurizer(self.test)
+        if write_features == True:
+                pkl.dump(self.dih_ref, ref_set_name)
+                pkl.dump(self.dih_test, test_set_name)
+                
+    def load_features(self, ref, test):
+        ref_set = pkl.load(ref)
+        test_set = pkl.load(test)
+        self.dih_ref = ref_set
+        self.dih_test = test_set
     
     def kl_div_H0(self, nblocks = 10, bins = 20, binrange = [-np.pi, np.pi], gamma = .001):
         if (self.dih_ref == None) or (self.dih_test == None):
-            print "Need to run featurize first."
+            print "Either run featurize or load features from a previous featurization first."
             return None
         
         def even_split(total, nblocks):
@@ -222,7 +232,7 @@ class local_kl_divergence:
     
     def kl_div(self, nblocks = 10, bins = 20, binrange = [-np.pi, np.pi], gamma = .001, alpha = .05):
         if (self.dih_ref == None) or (self.dih_test == None):
-            print "Need to run featurize first."
+            print "Either run featurize or load features from a previous featurization first."
             return None
         kl_div_H0, kl_div_bootstrap = self.kl_div_H0(nblocks = nblocks, bins = bins, binrange = binrange, gamma = gamma)
         p_ref = self.prob(self.dih_ref, bins = bins, binrange = binrange, gamma = gamma)
