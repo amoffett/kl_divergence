@@ -98,19 +98,19 @@ class local_kl_divergence:
     def dihedral_featurizer(self, trajs):
         
         def phi_feat(traj, res):
-            phi = traj.topology.select('(residue %i and name C) or (residue %i and (name N or name CA or name C))' %(res - 1, res))
+            phi = traj.topology.select('(resid %i and name C) or (resid %i and (name N or name CA or name C))' %(res - 1, res))
             phi = phi.reshape([1,4])
             traj_phi = md.compute_dihedrals(traj, phi)
             return traj_phi
-        
+
         def psi_feat(traj, res):
-            psi = traj.topology.select('(residue %i and (name N or name CA or name C)) or (residue %i and name N)' %(res, res + 1))
+            psi = traj.topology.select('(resid %i and (name N or name CA or name C)) or (resid %i and name N)' %(res, res + 1))
             psi = psi.reshape([1,4])
             traj_psi = md.compute_dihedrals(traj, psi)
             return traj_psi
-        
+
         def chi1_feat(traj, res):
-            chi1 = traj.topology.select('residue %i and (name C or name CA or name CB or name CG or name SG or name CG1 or name OG or name OG1)' %res)
+            chi1 = traj.topology.select('resid %i and (name C or name CA or name CB or name CG or name SG or name CG1 or name OG or name OG1)' %res)
             if chi1.shape[0] != 4:
                 return None
             chi1 = chi1.reshape([1,4])
