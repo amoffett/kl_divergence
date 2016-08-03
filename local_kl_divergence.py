@@ -63,8 +63,7 @@ class local_kl_divergence:
      ...
  
     References:
-    [1] McClendon, C. L., Hua, L., Barreiro, G. and Jacobson, M P. J. Chem. Theory Comput. 2012, 8, 2115−2126. 
-
+    [1] McClendon, C. L., Hua, L., Barreiro, G. and Jacobson, M P. J. Chem. Theory Comput. 2012, 8, 2115-2126. 
     """
     
     def __init__(self, ref, test, dihedrals = ['phi','psi','chi1']):
@@ -102,13 +101,13 @@ class local_kl_divergence:
             phi = phi.reshape([1,4])
             traj_phi = md.compute_dihedrals(traj, phi)
             return traj_phi
-
+        
         def psi_feat(traj, res):
             psi = traj.topology.select('(resid %i and (name N or name CA or name C)) or (resid %i and name N)' %(res, res + 1))
             psi = psi.reshape([1,4])
             traj_psi = md.compute_dihedrals(traj, psi)
             return traj_psi
-
+        
         def chi1_feat(traj, res):
             chi1 = traj.topology.select('resid %i and (name C or name CA or name CB or name CG or name SG or name CG1 or name OG or name OG1)' %res)
             if chi1.shape[0] != 4:
@@ -157,16 +156,20 @@ class local_kl_divergence:
     def featurize(self, write_features = False, ref_set_name = 'ref_set_dihedrals.pkl', test_set_name = 'test_set_dihedrals.pkl'):
         self.dih_ref = self.dihedral_featurizer(self.ref)
         self.dih_test = self.dihedral_featurizer(self.test)
-        if write_features == True:
-                pkl.dump(self.dih_ref, ref_set_name)
-                pkl.dump(self.dih_test, test_set_name)
-                
-    def load_features(self, ref, test):
-        ref_set = pkl.load(ref)
-        test_set = pkl.load(test)
-        self.dih_ref = ref_set
-        self.dih_test = test_set
+	if write_features == True:
+		with open(ref_set_name, 'wb') as f:
+			pkl.dump(self.dih_ref, f)
+		with open(test_set_name, 'wb') as f:
+			pkl.dump(self.dih_test, f)
     
+    def load_features(self, ref, test):
+	with open(ref, 'rb') as f:
+		ref_set = pkl.load(f)
+	with open(test, 'rb') as f:
+		test_set = pkl.load(f)
+	self.dih_ref = ref_set
+	self.dih_test = test_set
+
     def kl_div_H0(self, nblocks = 10, bins = 20, binrange = [-np.pi, np.pi], gamma = .001):
         if (self.dih_ref == None) or (self.dih_test == None):
             print "Either run featurize or load features from a previous featurization first."
