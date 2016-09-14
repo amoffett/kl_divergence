@@ -66,7 +66,7 @@ class local_kl_divergence:
     [1] McClendon, C. L., Hua, L., Barreiro, G. and Jacobson, M P. J. Chem. Theory Comput. 2012, 8, 2115-2126. 
     """
     
-    def __init__(self, ref, test, dihedrals = ['phi','psi','chi1']):
+    def __init__(self, ref = None, test = None, dihedrals = ['phi','psi','chi1']):
         self.ref = ref
         self.test = test
         self.dihedrals = dihedrals
@@ -94,7 +94,8 @@ class local_kl_divergence:
                 print "Different number of dihedral angles in different test trajectories."
                 return None
 
-	check_inputs()
+	if (self.ref != None) and (self.test != None):
+		check_inputs()
         
     def dihedral_featurizer(self, trajs):
         
@@ -235,7 +236,7 @@ class local_kl_divergence:
             kl_div_H0.append(kl_div_H0_n)
         return kl_div_H0, kl_div_bootstrap
     
-    def kl_div(self, nblocks = 10, bins = 20, binrange = [-np.pi, np.pi], gamma = .001, alpha = .05):
+    def kl_div(self, nblocks = 10, bins = 20, binrange = [-np.pi, np.pi], gamma = .001, alpha = .05, return_raw = False):
         if (self.dih_ref == None) or (self.dih_test == None):
             print "Either run featurize or load features from a previous featurization first."
             return None
@@ -244,9 +245,12 @@ class local_kl_divergence:
         p_test = self.prob(self.dih_test, bins = bins, binrange = binrange, gamma = gamma)
         n_res = len(p_ref)
         kl_div_list = []
+	kl_div_raw_list = []
         for res in range(n_res):
             resname = p_test[res][0]
             kl_div = np.sum(p_test[res][1] * np.log(p_test[res][1] / p_ref[res][1]))
+            if return_raw == True:
+                kl_div_raw_list.append(kl_div)
             kl_div_bootstrap_n = np.vstack(kl_div_bootstrap[res])
             p_value = np.sum(kl_div_bootstrap_n[kl_div_bootstrap_n[:] > kl_div])/float(np.sum(kl_div_bootstrap_n))
             if p_value < alpha:
@@ -254,4 +258,8 @@ class local_kl_divergence:
             else:
                 kl_div = 0
             kl_div_list.append([resname, kl_div])
-        return kl_div_list
+        if return_raw == True:
+            return kl_div_list, kl_div_raw_list
+        else:
+            return kl_div_list
+
