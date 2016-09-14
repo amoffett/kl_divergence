@@ -8,15 +8,14 @@ import pickle as pkl
 class local_kl_divergence:
     """
     Measures the local Kullback-Liebler divergence (KL divergence), as defined in [1], between two sets of simulations.
-    
-    KL_{res_{n}} = sum_{phi,psi,chi1}{sum_{i}^{nbins}{p_{i} * ln(p_{i} / p_{i}^{*})}}
-    
-    In words, the local KL divergence for residue n is the sum over all dihedral angles of residue n and all
+    In LaTeX formatting:    
+
+    KL_{res_{n}} = \sum_{d\in\{\phi,\psi,\chi_{1}\}}{\sum_{i}^{nbins}{p_{d,i}\ln\\bigg(\frac{p_{d,i}}{p_{d,i}^{*}}\\bigg)}}   
+ 
+    In words, the local KL divergence for residue n is the sum a specified set of dihedral angles of residue n and all
     bins for each angle of the empirical probability of being in bin i in the test ensemble (p_{i}), times the natural
     logarithm of the probability of being in bin i in the test ensemble divided by the probability of being in 
     bin i in the reference ensemble (p_{i}^{*}).
-    
-    Notation from [1] is replicated as closely as possible using LaTeX format while still maintaining clear readability. 
     
     Inputs:
         __init__:
@@ -29,11 +28,12 @@ class local_kl_divergence:
         
         kl_div:
         nblocks ==> The number of 'blocks' to split the reference simulation set into for bootstrapping. nblocks 
-                    must be less than or equal to the number of trajectories in the reference set. This will
-                    randomly sort trajectories into nblocks different blocks as evenly as possible for use in the
-                    bootstrapping method described in [1]. 
+                    must be less than or equal to the number of trajectories in the reference set and must be an 
+		    even number. This will randomly sort trajectories into nblocks different blocks as evenly as
+ 		    possible for use in the bootstrapping method described in [1]. 
         bins ==> The number of bins to use in each histogram.
-        binrange ==> The range of values to take each histogram over. The length of each bin is then: binrange / bins
+        binrange ==> The range of values to take each histogram over in radians (Ex. [-np.pi, np.pi]). The length
+		     of each bin is then: binrange / bins
         gamma ==> A pseudocount added to all counts to deal with zero counts in bins.
         alpha ==> Cutoff for p value from bootstrap distribution. If p < alpha, the returned value is KL_{res_{n}}
                     minus KL_{res_{n}}^{H0}, the mean of the bootstrap distribution.
@@ -93,6 +93,8 @@ class local_kl_divergence:
             elif not np.all(vtruth([traj.n_residues for traj in self.test],self.test[0].n_residues)):
                 print "Different number of dihedral angles in different test trajectories."
                 return None
+
+	check_inputs()
         
     def dihedral_featurizer(self, trajs):
         
@@ -180,7 +182,7 @@ class local_kl_divergence:
                 print "Cannot have more blocks than simulations."
                 return None
             elif nblocks % 2 != 0:
-                print "\'nblocks\' must be an even number"
+                print "\'nblocks\' is not an even number."
                 return None
             integer_divisor = total / nblocks
             remainder = total % nblocks
