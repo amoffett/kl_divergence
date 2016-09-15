@@ -2,7 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 class brownian_dynamics_1d():
-    
+    """
+    Simulate a Brownian particle in a potential energy field consisting of a 3 Gaussian mixture.
+    """
     def __init__(self, n_particles = 1, gamma = 1, T = 1, bound = [0, 360], V = np.array([[-.5, -.001, 90], \
                                                                                           [-1, -.001, 180], \
                                                                                           [-.2, -.001, 270]])):
