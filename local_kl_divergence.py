@@ -143,6 +143,7 @@ class local_kl_divergence:
         return residue_list 
     
     def prob(self, trajs, bins = 20, binrange = [-np.pi, np.pi], gamma = .001):
+	    binrange = list(np.float32(binrange))
             all_p_dists = []
             for resname, res in trajs:
                 res = np.vstack(res)
