@@ -253,7 +253,8 @@ class local_kl_divergence:
             if return_raw == True:
                 kl_div_raw_list.append(kl_div)
             kl_div_bootstrap_n = np.vstack(kl_div_bootstrap[res])
-            p_value = np.sum(kl_div_bootstrap_n[kl_div_bootstrap_n[:] > kl_div])/float(np.sum(kl_div_bootstrap_n))
+            # This is a mistake: p_value = np.sum(kl_div_bootstrap_n[kl_div_bootstrap_n[:] > kl_div])/float(np.sum(kl_div_bootstrap_n))
+	    p_value = np.sum(kl_div_bootstrap_n > kl_div)/float(kl_div_bootstrap_n.shape[0])
             if p_value < alpha:
                 kl_div = kl_div - kl_div_H0[res]
             else:
